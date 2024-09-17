@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anasayfa</title>
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+    
+</head>
+<body>
+    <div class="container d-flex flex-column justify-content-center align-items-center">
+        <div class="row">
+            <div style="height: 40px;"></div>
+            <div class="col-12 border border-success border-2 rounded-5 p-4 mb-4">
+                
+                <p class="fs-5 ms-1">Tahmin etmek istediğiniz örneğin değerlerini giriniz.</p>
+                <form action="{% url 'arayuz' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% if nitelikler %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            {% for nitelikler, dtype in degerler %}
+                            <tr>
+                                <td>{{ nitelikler }}</td>
+                                <td>
+                                    {% if dtype == 'object' %}
+                                    <input class="form-control" type="text" name="deger[]" id="{{ nitelikler }}" required>
+                                    {% elif dtype == 'int64' or dtype == 'float64' %}
+                                    <input class="form-control" type="number" step="any" name="deger[]" id="{{ nitelikler }}" required>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                                <tr>
+                                    <td>K Değeri</td>
+                                    <td><input class="form-control" type="number" name="k_degeri" id="k" required></td>
+                                </tr>
+                        </table>
+                    </div>
+                    
+                        <div class="col-12 mt-3 mb-3">
+                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                            <input type="radio" class="btn-check" name="secim" value="1" id="btnradio1" autocomplete="off" checked>
+                            <label class="btn btn-outline-success" for="btnradio1">Öklid</label>
+                          
+                            <input type="radio" class="btn-check" name="secim" value="2" id="btnradio2" autocomplete="off">
+                            <label class="btn btn-outline-success" for="btnradio2">Manhattan</label>
+                          
+                            <input type="radio" class="btn-check" name="secim" value="3" id="btnradio3" autocomplete="off">
+                            <label class="btn btn-outline-success" for="btnradio3">Minkowski - Öklid</label>
+                            
+                            <input type="radio" class="btn-check" name="secim" value="4" id="btnradio4" autocomplete="off">
+                            <label class="btn btn-outline-success" for="btnradio4">Minkowski - Manhattan</label>
+                        </div>
+                        </div>
+    
+    
+                    {% endif %}
+                    <input type="submit" class="btn btn-success" value="Sonuç">
+                    <a class="btn btn-warning" href="{% url 'list' %}" >Veri Sayfası</a>
+                    <div class="mt-4 ms-3">
+                    <div class="row mt-2"> 
+                        GridSearch Algoritmasına göre;
+                    </div>
+                    <div class="row mt-2">
+                        Tavsiye edilen k değeri: {{best_k}}
+                    </div>
+                    <div class="row mt-2">
+                        Tavsiye edilen metric yöntemi: {{best_metric}}
+                    </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row border border-2 border-warning rounded-5 m-4 p-4">
+            <table class="table">
+                <tr>
+                    <th>
+                        Sınıf Değeri
+                    </th>
+                    <th>
+                        <div style="width: 45px;"></div>
+                    </th>
+                    <th>
+                        Eğitimin Doğruluğu
+                    </th>
+                    <th>
+                        <div style="width: 45px;"></div>
+                    </th>
+                    <th>
+                        Testin Doğruluğu
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        {% if tahmin is not None %}
+                           
+                            {{ tahmin }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div style="width: 45px;"></div>
+                    </td>
+                    <td>
+                        {% if knn_train_accuracy is not None %}
+                            {{ knn_train_accuracy }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div style="width: 45px;"></div>
+                    </td>
+                    <td>
+                        {% if knn_test_accuracy is not None %}
+                            {{ knn_test_accuracy }}
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="row mt-3 mb-3">
+            <div class="col bg-secondary-subtle p-4 rounded-5">
+                <pre>{{ report }}</pre>
+            </div>
+        </div>
+        
+        
+    
+      
+        
+    </div>
+    <script src="{% static 'bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

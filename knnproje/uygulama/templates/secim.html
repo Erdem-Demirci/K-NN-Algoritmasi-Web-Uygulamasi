@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secim</title>
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+</head>
+<body>
+    <div style="height: 100px;" ></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-9 fs-3 fw-bold">
+                Niteliklerinizi Seçiniz
+            </div>
+        </div>
+        {% if error_message %}
+        <center>
+        <div class="alert alert-danger col-9" role="alert">
+            {{ error_message }}
+        </div>
+        </center>
+        {% endif %}
+        
+        <div style="height: 25px;"></div>
+        <div class="row justify-content-center">
+            <div class="col-9">
+                <form action="{% url 'secim' %}" method="post">
+                    {% csrf_token %}
+                    {% if kolon %}
+                        <div class="row">
+                            {% for kolon, dtype in degerler %}
+                                <div class="col-3 mb-2">
+                                    <input type="checkbox" class="btn-check attribute-checkbox" id="{{kolon}}" name="nitelikler" value="{{kolon}}" autocomplete="off">
+                                    <label style="width: 100%;height: 100%;" class="btn btn-outline-primary" for="{{kolon}}">{{kolon}} {{dtype}}</label>
+                                </div>
+                                {% if forloop.counter|divisibleby:4 %}
+                                    </div><div class="row">
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="row justify-content-center mt-5">
+                        <div class="col-12 fs-3 fw-bold">
+                            Sınıfı Seçiniz
+                        </div>
+                    </div>
+                    <div style="height: 25px;"></div>
+                    <div class="row justify-content-center">
+                        <div class="col-12">
+                            {% if kolon %}
+                                <div class="row">
+                                    {% for kolon, dtype in degerler %}
+                                        <div class="col-3 mb-2">
+                                            <input type="radio" class="btn-check class-selection" name="sinif" id="{{kolon}}1" value="{{kolon}}" autocomplete="off">
+                                            <label style="width: 100%;height: 100%;" class="btn btn-outline-primary" for="{{kolon}}1">{{kolon}} {{dtype}}</label>
+                                        </div>
+                                        {% if forloop.counter|divisibleby:4 %}
+                                            </div><div class="row">
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row p-2 m-2">
+                        <div class="row p-2">
+                        <div class="col">
+                            Minimum K değerini giriniz
+                        </div>
+                        <div class="col">
+                            <input class="form-control" type="text" name="min_k" id="min_k">
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col">
+                            Maximum K değerini giriniz
+                        </div>
+                        <div class="col">
+                            <input class="form-control" type="text" name="max_k" id="max_k">
+                        </div>
+                    </div>
+                    </div>
+                    <input type="submit" class="btn btn-primary mt-3" value="Gönder">
+                    <a class="btn btn-warning mt-3" href="{% url 'list' %}">Veri Sayfası</a>
+                </form>
+                <div style="height: 35px;"></div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'bootstrap.bundle.min.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var checkboxes = document.querySelectorAll('.attribute-checkbox');
+            var radios = document.querySelectorAll('.class-selection');
+
+            function toggleDisableState() {
+                checkboxes.forEach(function(checkbox) {
+                    var correspondingRadio = document.querySelector('input[name="sinif"][id="' + checkbox.id + '1"]');
+                    if (checkbox.checked) {
+                        correspondingRadio.disabled = true;
+                    } else {
+                        correspondingRadio.disabled = false;
+                    }
+                });
+            }
+
+            checkboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    toggleDisableState();
+                });
+            });
+
+            radios.forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    checkboxes.forEach(function(checkbox) {
+                        checkbox.disabled = false;
+                    });
+                    var selectedCheckbox = document.querySelector('input[type="checkbox"][id="' + this.id.slice(0, -1) + '"]');
+                    if (this.checked) {
+                        selectedCheckbox.disabled = true;
+                    }
+                    toggleDisableState();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

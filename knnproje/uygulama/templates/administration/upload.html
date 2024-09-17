@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <div style="height: 150px;"></div>
+        
+        <div class="row d-flex justify-content-center align-items-center text-center" style="min-height: 50vh;">
+            <div class="col-6">
+                <p class="fs-3">Yapay Zeka dersi K-NN projesi</p>
+                
+                <h4 class="mb-3 mt-3">CSV Dosyası Yükle</h4>
+                {% if error_message %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error_message }}
+                </div>
+                {% endif %}
+                    <form action="{% url 'list' %}" method="post" enctype="multipart/form-data" >
+                        {% csrf_token %}
+                        <div class="row justify-content-center">
+                        <div class="col-8 mb-3">
+                            <input class="form-control border border-4 " type="file" name="file">
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-5 d-grid">
+                                <button class="btn btn-success justify-self-center" type="submit">Yükle</button>
+                            </div>
+                        </div>
+                        </div>
+                    </form>
+                
+                
+                <div style="height: 150px;"></div>
+                <p class="fs-5">21100011014 Erdem Lale</p>
+                <p class="fs-5">20010011033 Erdem Demirci</p>
+                <p class="fs-5">21100011010 Metin Furkan Yaman</p>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>
